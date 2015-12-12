@@ -6,8 +6,6 @@ interface ActionReference
 
     public function getPlayers();
 
-    public function getGame($id);
-
     public function getFullPlayers();
 
     public function getServers();

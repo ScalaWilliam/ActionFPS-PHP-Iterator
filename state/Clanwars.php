@@ -147,6 +147,9 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
 {   
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
+        $clangame = isset($game->teams[0]->clan) && isset($game->teams[1]->clan)
+            && $game->teams[0]->clan != $game->teams[1]->clan;
+        
         if(count($state)) for($i = count($state); $i >= 0; --$i)
         {
             if($state[$i]->timeDiff($game) >= 10 * 60) break;

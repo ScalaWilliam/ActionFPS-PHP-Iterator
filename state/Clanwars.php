@@ -63,14 +63,12 @@ class Clanwar implements JsonSerializable
         $clans = array($game->teams[0]->clan, $game->teams[1]->clan);
         sort($clans);
 
-        $time = new DateTime($game->gameTime);
-        $prev_time = new DateTime($prev_game->gameTime);
-        $interval = $time->getTimestamp() - $prev_time->getTimestamp();
+        $interval = $this->timeDiff($game);
 
         return ($game->server == $this->server
          && $clans == $this->clans
          && $teamsize == $this->teamsize
-         && $interval <= $game->duration * 60 + 10*60);
+         && $interval <= 10*60);
 
     }
     

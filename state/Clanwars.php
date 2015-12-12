@@ -108,8 +108,8 @@ class Clanwar implements JsonSerializable
         }
         $this->endTime = date('Y-m-dT\H:i:sZ', $game->startTime + 60 * $game->duration); // FIXME
         
-        awardTrophees();
-        decideWinner();
+        $this->awardTrophees();
+        $this->decideWinner();
     }
     
     public function awardTrophees()

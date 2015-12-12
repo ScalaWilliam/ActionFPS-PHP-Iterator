@@ -95,7 +95,8 @@ class Clanwar implements JsonSerializable
             {
                 $user = isset($player->user) ? $player->user : '';
                 $n = self::lookup_player($this->clans[$id]->players, $player->name, $user);
-                if($n === false) $n = add_player($this->clans[$id]->players, $player->name, $user);
+                if($n === false)
+                    $n = self::add_player($this->clans[$id]->players, $player->name, $user);
                 if(isset($player->score))
                 {
                     $this->clans[$id]->players[$n]->score += $player->score;

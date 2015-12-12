@@ -50,7 +50,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 $state[$id]->flags += $player->flags ?? $player->flags;
                 $state[$id]->frags += $player->frags;
                 $state[$id]->deaths += $player->deaths;
-                $team->elo += $players[$i]['elo'];
+                $team->elo += $state[$id]->elo;
                 $state[$id]->contrib = $win ? $player->score / $team->score : 1-$player->score / $team->score;
             }
         }

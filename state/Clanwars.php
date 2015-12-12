@@ -14,6 +14,15 @@ class Clanwar implements JsonSerializable
     {
         $this->startTime = $game->gameTime;
         $this->clans = array($game->teams[0]->clan, $game->teams[1]->clan);
+        for($i = 0; $i < 2; ++$i)
+        {
+            $this->clans[$i]->clan = '';
+            $this->clans[$i]->wins = 0;
+            $this->clans[$i]->won = array();
+            $this->clans[$i]->score = $this->clans[$i]->flags = $this->clans[$i]->frags = 0;
+            $this->clans[$i]->players = array();
+
+        }
         sort($this->clans);
         $this->teamsize = min(count($game->teams[0]->players), count($game->teams[1]->players));
         $this->addGame($game);
@@ -22,9 +31,9 @@ class Clanwar implements JsonSerializable
     public static function add_player(&$players, $name, $user = '')
     {
         $player = array();
-        if($user) $player['user'] = $user;
-        $player['name'] = $name;
-        $player['score'] = $player['flags'] = $player['frags'] = $player['deaths'] = 0;
+        if($user) $player->user = $user;
+        $player->name = $name;
+        $player->score = $player->flags = $player->frags = $player->deaths = 0;
         $players[] = $player;
         return count($players)-1;
     }
@@ -33,10 +42,17 @@ class Clanwar implements JsonSerializable
     {
         foreach($players as $key => $player)
         {
-            if(($user && array_key_exists('user', $player) && $user == $player['user']) || $name == $player['name']) return $key;
+            if(($user && array_key_exists('user', $player) && $user == $player->user) || $name == $player->name) return $key;
         }
         return false;
 
+    }
+    
+    public function timeDiff($game)
+    {
+        $last_game_end = new DateTime($this>endTime);
+        $game_start = new DateTime($game->gameTime);
+        return $game_start->getTimestamp() - $last_game_end->getTimestamp();
     }
     
     public function isNext($game)
@@ -72,20 +88,23 @@ class Clanwar implements JsonSerializable
                 $this->clans[$id]['won'][] = $game->gameTime; // FIXME use ID even if both are = ATM
             }
             if(isset($team->flags)) $this->clans[$id]['flags'] += $team->flags;
-            $this->clans[$id]['frags'] += $team->frags;
-            $this->clans[$id]['score'] += sum_team_players($team, 'score');
+            $this->clans[$id]->frags += $team->frags;
+            $this->clans[$id]->score += sum_team_players($team, 'score');
 
             foreach($team->players as $player)
             {
                 $user = isset($player->user) ? $player->user : '';
-                $n = self::lookup_player($this->clans[$id]['players'], $player->name, $user);
-                if($n === false) $n = add_player($this->clans[$id]['players'], $player->name, $user);
-                if(isset($player->score)) $this->clans[$id]['players'][$n]['score'] += $player->score;
-                $this->clans[$id]['players'][$n]['frags'] += $player->frags;
-                $this->clans[$id]['players'][$n]['deaths'] += $player->deaths;
+                $n = self::lookup_player($this->clans[$id]->players, $player->name, $user);
+                if($n === false) $n = add_player($this->clans[$id]->players, $player->name, $user);
+                if(isset($player->score)) $this->clans[$id]->players[$n]->score += $player->score;
+                $this->clans[$id]->players[$n]->frags += $player->frags;
+                $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }
         }
-        $this->endTime = $game->startTime + 60 * $game->duration;
+        $this->endTime = $game->startTime + 60 * $game->duration; // FIXME
+        
+        awardTrophees();
+        decideWinner();
     }
     
     public function awardTrophees()
@@ -115,8 +134,6 @@ class Clanwar implements JsonSerializable
     }
     
     public function jsonSerialize() {
-        awardTrophees();
-        decideWinner();
         for($i = 0; $i < 2; ++$i) if(!count($this->clans[$i]["won"])) unset($this->clans[$i]["won"]);
         return $this;
     }
@@ -133,41 +150,17 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
     
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
-        $tie = isset($game->winner);
-        foreach($game->teams as $n => &$team)
+        for($i = count($state); $i >= 0; --$i)
         {
-            $win = $n == 0;
-            $team->elo = 0;
-            $team->score = self::sum_team_players($team, 'score');
-            foreach($team->players as $player) if(isset($player->user))
+            if($state[$i]->timeDiff($game) >= 10 * 60) break;
+            else if($state[$i]->isNext($game))
             {
-                $id = $player->user;
-                if(!array_key_exists($id, $players)) $state[$id] = new PlayerStats($id, $name);
-                $state[$id]->{$win ? 'wins' : 'losses'}++;
-                $state[$id]->games++;
-                $state[$id]->score += isset($player->score) ? $player->score : 0;
-                $state[$id]->flags += $player->flags ?? $player->flags;
-                $state[$id]->frags += $player->frags;
-                $state[$id]->deaths += $player->deaths;
-                $team->elo += $players[$i]['elo'];
-                $state[$id]->contrib = $win ? $player->score / $team->score : 1-$player->score / $team->score;
+                $state[$i]->addGame($game);
+                return $state;
             }
         }
-        $delta = $game->teams[0]->elo - $game->teams[1]->elo;
-        $p = 1/(1+pow(10, -$delta/400)); // probability for the winning team to win
-
-        $k = 40;
-        $modifier = $tie ? 0.5 : 1;
-
-        foreach($game->teams as $n => &$team)
-        {
-            $win = $n == 0;
-            foreach($team->players as $player) if(isset($player->user))
-            {
-                $id = $player->user;
-                $state[$id]->elo += ($win ? 1 : -1) * $k * ($modifier - $p) * $state[$id]->contrib;
-            }
-        }
+        
+        $state[] = new Clanwar($game);
         return $state;
     }
 

@@ -41,6 +41,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
         $tie = isset($game->winner);
+        $count_elo = $game->mode == "ctf" && count($game->teams[0]->players) == count($game->teams[1]->players);
         foreach($game->teams as $n => &$team)
         {
             $win = $n == 0;
@@ -52,7 +53,10 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 if(!$this->playerExists($state, $id)) $state[$id] = new PlayerStats($id, $player->name);
                 $state[$id]->{$win ? 'wins' : 'losses'}++;
                 $state[$id]->games++;
-                $state[$id]->score += isset($player->score) ? $player->score : 0;
+                if(isset($player->score))
+                    $state[$id]->score += $player->score;
+                else
+                    $count_elo = false;
                 $state[$id]->flags += isset($player->flags) ?: 0;
                 $state[$id]->frags += $player->frags;
                 $state[$id]->deaths += $player->deaths;
@@ -60,19 +64,25 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 $state[$id]->contrib = isset($player->score) ? ($win ? $player->score / $team->score : 1-$player->score / $team->score) : 0;
             }
         }
-        $delta = $game->teams[0]->elo - $game->teams[1]->elo;
-        $p = 1/(1+pow(10, -$delta/400)); // probability for the winning team to win
-
-        $k = 40;
-        $modifier = $tie ? 0.5 : 1;
-
-        foreach($game->teams as $n => &$team)
+        if($count_elo)
         {
-            $win = $n == 0;
-            foreach($team->players as $player) if(isset($player->user))
+            $players_count = (count($game->teams[0]->players) + count($game->teams[1]->players))/2.0;
+            $delta = ($game->teams[0]->elo - $game->teams[1]->elo) / $players_count;
+            $delta = max(min($delta, 400), -400);
+
+            $p = 1/(1+pow(10, -$delta/400)); // probability for the winning team to win
+
+            $k = 40;
+            $modifier = $tie ? 0.5 : 1;
+
+            foreach($game->teams as $n => &$team)
             {
-                $id = $player->user;
-                $state[$id]->elo += ($win ? 1 : -1) * $k * ($modifier - $p) * $state[$id]->contrib;
+                $win = $n == 0;
+                foreach($team->players as $player) if(isset($player->user))
+                {
+                    $id = $player->user;
+                    $state[$id]->elo += ($win ? 1 : -1) * $k * ($modifier - $p) * $state[$id]->contrib;
+                }
             }
         }
         return $state;

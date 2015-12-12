@@ -85,8 +85,8 @@ class Clanwar implements JsonSerializable
             $id = $team->clan == $this->clans[0] ? 0 : 1;
             if($win)
             {
-                $this->clans[$id]['wins']++;
-                $this->clans[$id]['won'][] = $game->gameTime; // FIXME use ID even if both are = ATM
+                $this->clans[$id]->wins++;
+                $this->clans[$id]->won[] = $game->gameTime; // FIXME use ID even if both are = ATM
             }
             if(isset($team->flags)) $this->clans[$id]->flags += $team->flags;
             $this->clans[$id]->frags += $team->frags;

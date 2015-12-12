@@ -53,7 +53,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 $state[$id]->{$win ? 'wins' : 'losses'}++;
                 $state[$id]->games++;
                 $state[$id]->score += isset($player->score) ? $player->score : 0;
-                $state[$id]->flags += $player->flags ?? $player->flags;
+                $state[$id]->flags += isset($player->flags) ?: 0;
                 $state[$id]->frags += $player->frags;
                 $state[$id]->deaths += $player->deaths;
                 $team->elo += $state[$id]->elo;

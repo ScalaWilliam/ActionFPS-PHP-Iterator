@@ -31,7 +31,7 @@ class Clanwar implements JsonSerializable
     
     public static function add_player(&$players, $name, $user = '')
     {
-        $player = array();
+        $player = new stdClass();
         if($user) $player->user = $user;
         $player->name = $name;
         $player->score = $player->flags = $player->frags = $player->deaths = 0;

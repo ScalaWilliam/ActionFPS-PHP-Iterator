@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ScalaWilliam/ActionFPS-PHP-Iterator"
+    }
+  ],
+  "require": {
+    "ScalaWilliam/ActionFPS-PHP-Iterator": "v0.1"
+  }
+}

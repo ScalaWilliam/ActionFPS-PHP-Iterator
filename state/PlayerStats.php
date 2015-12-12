@@ -39,7 +39,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
         {
             $win = $n == 0;
             $team->elo = 0;
-            $team->score = self::sum_team_players($team, 'score');
+            $team->score = self::sum_players($team->players, 'score');
             foreach($team->players as $player) if(isset($player->user))
             {
                 $id = $player->user;

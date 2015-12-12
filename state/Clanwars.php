@@ -88,16 +88,19 @@ class Clanwar implements JsonSerializable
                 $this->clans[$id]['wins']++;
                 $this->clans[$id]['won'][] = $game->gameTime; // FIXME use ID even if both are = ATM
             }
-            if(isset($team->flags)) $this->clans[$id]['flags'] += $team->flags;
+            if(isset($team->flags)) $this->clans[$id]->flags += $team->flags;
             $this->clans[$id]->frags += $team->frags;
-            $this->clans[$id]->score += sum_team_players($team, 'score');
 
             foreach($team->players as $player)
             {
                 $user = isset($player->user) ? $player->user : '';
                 $n = self::lookup_player($this->clans[$id]->players, $player->name, $user);
                 if($n === false) $n = add_player($this->clans[$id]->players, $player->name, $user);
-                if(isset($player->score)) $this->clans[$id]->players[$n]->score += $player->score;
+                if(isset($player->score))
+                {
+                    $this->clans[$id]->players[$n]->score += $player->score;
+                    $this->clans[$id]->score += $player->score;
+                }
                 $this->clans[$id]->players[$n]->frags += $player->frags;
                 $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }
@@ -135,20 +138,13 @@ class Clanwar implements JsonSerializable
     }
     
     public function jsonSerialize() {
-        for($i = 0; $i < 2; ++$i) if(!count($this->clans[$i]["won"])) unset($this->clans[$i]["won"]);
+        for($i = 0; $i < 2; ++$i) if(!count($this->clans[$i]->won)) unset($this->clans[$i]->won);
         return $this;
     }
 }
 
 class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
-{
-    public static protected function sum_players($players, $attribute)
-    {
-        $sum = 0;
-        foreach($players as $player) if(isset($player->$attribute)) $sum += $player->$attribute; 
-        return $sum;
-    }
-    
+{   
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
         for($i = count($state); $i >= 0; --$i)

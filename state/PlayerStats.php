@@ -9,10 +9,11 @@ class PlayerStats implements JsonSerializable
     public $ties = 0;
     public $games = 0;
     public $score = 0;
+    public $flags = 0;
     public $frags = 0;
     public $deaths = 0;
     
-    public function __construct($user, $name)
+    public function __construct($id, $name)
     {
         $this->user = $id;
         $this->name = $name;
@@ -32,6 +33,11 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
         return $sum;
     }
     
+    public function playerExists($state, $id)
+    {
+        return array_key_exists($id, $state);
+    }
+    
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
         $tie = isset($game->winner);
@@ -43,7 +49,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
             foreach($team->players as $player) if(isset($player->user))
             {
                 $id = $player->user;
-                if(!array_key_exists($id, $players)) $state[$id] = new PlayerStats($id, $name);
+                if($this->playerExists($state, $id)) $state[$id] = new PlayerStats($id, $name);
                 $state[$id]->{$win ? 'wins' : 'losses'}++;
                 $state[$id]->games++;
                 $state[$id]->score += isset($player->score) ? $player->score : 0;

@@ -1,0 +1,8 @@
+{
+  "name": "ScalaWilliam/ActionFPS-PHP-Iterator",
+  "autoload": {
+    "psr-4": {
+      "ActionFPS\\": "ActionFPS"
+    }
+  }
+}

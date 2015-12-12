@@ -117,7 +117,7 @@ class Clanwar implements JsonSerializable
         $mvp_points = [ -1000, 1000 ];
         foreach($this->clans as $i => &$clan)
         {
-            foreach($this->clans as $player)
+            foreach($clan->players as $player)
             {
                 if($player->score > $mvp_points[$i])
                 {
@@ -132,7 +132,7 @@ class Clanwar implements JsonSerializable
     
     public function decideWinner()
     {
-        $delta_wins = $this->clans[0]->wins - $clanwar->clans[1]->wins;
+        $delta_wins = $this->clans[0]->wins - $this->clans[1]->wins;
         if($delta_wins < 0) $this->clans = array_reverse($this->clans);
         $this->winner = ($delta_wins != 0) ? $this->clans[0]->clan : null;
         $this->complete = $this->winner && count($this->games) > 1;

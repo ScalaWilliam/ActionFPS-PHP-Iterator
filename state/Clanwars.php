@@ -18,9 +18,9 @@ class Clanwar implements JsonSerializable
         {
             $this->clans[$i]->clan = '';
             $this->clans[$i]->wins = 0;
-            $this->clans[$i]->won = array();
+            $this->clans[$i]->won = [];
             $this->clans[$i]->score = $this->clans[$i]->flags = $this->clans[$i]->frags = 0;
-            $this->clans[$i]->players = array();
+            $this->clans[$i]->players = [];
             $this->clans[$i]->mvp = new stdClass(); // ugh
 
         }
@@ -113,7 +113,7 @@ class Clanwar implements JsonSerializable
     
     public function awardTrophees()
     {
-        $mvp_points = array(-1000, -1000);
+        $mvp_points = [ -1000, 1000 ];
         foreach($this->clans as $i => &$clan)
         {
             foreach($this->clans as $player)
@@ -121,7 +121,7 @@ class Clanwar implements JsonSerializable
                 if($player->score > $mvp_points[$i])
                 {
                     $clan->mvp->name = $player->name;
-                    if(isset($player['user'])) $clan->mvp->user = $player->user; 
+                    if(isset($player->user)) $clan->mvp->user = $player->user; 
                     $mvp_points[$i] = $player->score;
                 }
             }

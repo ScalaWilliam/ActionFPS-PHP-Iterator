@@ -25,7 +25,7 @@ class PlayerStats implements JsonSerializable
 
 class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
 {
-    public static protected function sum_players($players, $attribute)
+    public static function sum_players($players, $attribute)
     {
         $sum = 0;
         foreach($players as $player) if(isset($player->$attribute)) $sum += $player->$attribute; 

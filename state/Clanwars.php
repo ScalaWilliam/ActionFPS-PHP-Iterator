@@ -147,7 +147,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
 {   
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
-        for($i = count($state); $i >= 0; --$i)
+        if(count($state)) for($i = count($state); $i >= 0; --$i)
         {
             if($state[$i]->timeDiff($game) >= 10 * 60) break;
             else if($state[$i]->isNext($game))

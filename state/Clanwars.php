@@ -21,6 +21,7 @@ class Clanwar implements JsonSerializable
             $this->clans[$i]->won = array();
             $this->clans[$i]->score = $this->clans[$i]->flags = $this->clans[$i]->frags = 0;
             $this->clans[$i]->players = array();
+            $this->clans[$i]->mvp = new stdClass(); // ugh
 
         }
         sort($this->clans);
@@ -114,11 +115,11 @@ class Clanwar implements JsonSerializable
         {
             foreach($this->clans as $player)
             {
-                if($player['score'] > $mvp_points[$i])
+                if($player->score > $mvp_points[$i])
                 {
-                    $clan['mvp']['name'] = $player['name'];
-                    if(isset($player['user'])) $clan['mvp']['user'] = $player['user']; 
-                    $mvp_points[$i] = $player['score'];
+                    $clan->mvp->name = $player->name;
+                    if(isset($player['user'])) $clan->mvp->user = $player->user; 
+                    $mvp_points[$i] = $player->score;
                 }
             }
         }

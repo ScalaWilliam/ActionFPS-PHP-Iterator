@@ -11,5 +11,8 @@ $clanwars = new ClanwarsAccumulator();
 
 $reference = new ActionFPS\GamesCachedActionReference();
 $proc = new ActionFPS\Processor();
+
+$start_time = microtime(true);
 echo json_encode($proc->processFromScratch($reference, $playerstats)->getState());
 echo json_encode($proc->processFromScratch($reference, $clanwars)->getState());
+echo "\n" . microtime(true) - $start_time;

@@ -33,7 +33,7 @@ class ActualActionReference implements ActionReference
     protected function process_lines($stream) {
         while ($line = stream_get_line($stream, 9000, "\n")) {
             list(, $json_game) = explode("\t", $line);
-            $decoded = json_decode($json_game, true);
+            $decoded = json_decode($json_game);
             yield $decoded;
         }
         fclose($stream);

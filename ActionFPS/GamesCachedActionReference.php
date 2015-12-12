@@ -12,4 +12,9 @@ class GamesCachedActionReference extends ActualActionReference {
         }
         return $this->process_lines(fopen("all.tsv", "r"));
     }
+    
+    function getNewGames()
+    {
+        
+    }
 }

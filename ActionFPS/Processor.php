@@ -10,7 +10,7 @@ class Processor
         $games = $reference->getAllGames();
         print_r($games);
         foreach ($games as $game) {
-            $seen[] = $game['id'];
+            $seen[] = $game->id;
             $state = $iterator->reduce($reference, $state, $game);
         }
         return new BasicStateResult($state, $seen);

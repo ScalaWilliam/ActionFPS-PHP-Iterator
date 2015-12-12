@@ -49,7 +49,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
             foreach($team->players as $player) if(isset($player->user))
             {
                 $id = $player->user;
-                if($this->playerExists($state, $id)) $state[$id] = new PlayerStats($id, $player->name);
+                if(!$this->playerExists($state, $id)) $state[$id] = new PlayerStats($id, $player->name);
                 $state[$id]->{$win ? 'wins' : 'losses'}++;
                 $state[$id]->games++;
                 $state[$id]->score += isset($player->score) ? $player->score : 0;

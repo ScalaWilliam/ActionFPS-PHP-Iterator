@@ -13,7 +13,7 @@ class Clanwar implements JsonSerializable
     public function __construct($game)
     {
         $this->startTime = $game->gameTime;
-        $this->clans = array($game->teams[0]->clan, $game->teams[1]->clan);
+        $this->clans = array(new stdClass(), new stdClass());
         for($i = 0; $i < 2; ++$i)
         {
             $this->clans[$i]->clan = '';

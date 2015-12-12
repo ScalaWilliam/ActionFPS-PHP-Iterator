@@ -153,7 +153,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
         
         if(!$clangame) return $state;
         
-        if(count($state)) for($i = count($state); $i >= 0; --$i)
+        for($i = count($state)-1; $i >= 0; --$i)
         {
             if($state[$i]->timeDiff($game) >= 10 * 60) break;
             else if($state[$i]->isNext($game))

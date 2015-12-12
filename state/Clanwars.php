@@ -51,7 +51,7 @@ class Clanwar implements JsonSerializable
     
     public function timeDiff($game)
     {
-        $last_game_end = new DateTime($this>endTime);
+        $last_game_end = new DateTime($this->endTime);
         $game_start = new DateTime($game->gameTime);
         return $game_start->getTimestamp() - $last_game_end->getTimestamp();
     }

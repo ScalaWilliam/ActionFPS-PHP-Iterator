@@ -127,9 +127,9 @@ class Clanwar implements JsonSerializable
     
     public function decideWinner()
     {
-        $delta_wins = $this->clans[0]['wins'] - $clanwar->clans[1]['wins'];
+        $delta_wins = $this->clans[0]->wins - $clanwar->clans[1]->wins;
         if($delta_wins < 0) $this->clans = array_reverse($this->clans);
-        $this->winner = ($delta_wins != 0) ? $this->clans[0]['clan'] : null;
+        $this->winner = ($delta_wins != 0) ? $this->clans[0]->clan : null;
         $this->complete = $this->winner && count($this->games) > 1;
     }
     

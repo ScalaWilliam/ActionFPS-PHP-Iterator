@@ -105,7 +105,7 @@ class Clanwar implements JsonSerializable
                 $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }
         }
-        $this->endTime = $game->startTime + 60 * $game->duration; // FIXME
+        $this->endTime = date('Y-m-dT\H:i:sZ', $game->startTime + 60 * $game->duration); // FIXME
         
         awardTrophees();
         decideWinner();

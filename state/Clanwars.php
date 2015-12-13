@@ -7,7 +7,7 @@ class Clanwar implements JsonSerializable
     public $games = array();
     public $server = "";
     public $teamsize = "";
-    public $complete = false;
+    public $completed = false;
     public $winner = null;
     
     public function __construct($game)
@@ -68,7 +68,8 @@ class Clanwar implements JsonSerializable
         return ($game->server == $this->server
          && $clans == $this->clans
          && $teamsize == $this->teamsize
-         && $interval <= 10*60);
+         && $interval <= 10*60
+         && !$this->completed);
 
     }
     
@@ -134,7 +135,8 @@ class Clanwar implements JsonSerializable
         $delta_wins = $this->clans[0]->wins - $this->clans[1]->wins;
         if($delta_wins < 0) $this->clans = array_reverse($this->clans);
         $this->winner = ($delta_wins != 0) ? $this->clans[0]->clan : null;
-        $this->complete = $this->winner && count($this->games) > 1;
+        //$this->completed = $this->winner && count($this->games) > 1;
+        $this->completed = ($this->winner && count($this->games) > 1) || count($this->games) >= 3;
     }
     
     public function jsonSerialize() {

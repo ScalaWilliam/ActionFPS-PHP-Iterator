@@ -15,6 +15,6 @@ class GamesCachedActionReference extends ActualActionReference {
     
     function getNewGames()
     {
-        
+        return [ json_decode( $_SERVER['argv'][1] ) ];
     }
 }

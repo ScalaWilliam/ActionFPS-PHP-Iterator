@@ -18,14 +18,18 @@ class Processor
     
     public function processNew(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state)
     {
+		$state = $initial_state->getState();
+		$seen = $initial_state->getSeen();
+		
         $games = $reference->getNewGames();
         foreach ($games as $game) {
-            if(!in_array($game->id, $initial_state->seen))
+            if(!in_array($game->id, $seen))
             {
-                $initial_state->seen[] = $game->id;
-                $initial_state->state = $iterator->reduce($reference, $initial_state->state, $game);
+                $seen = $game->id;
+                $state->state = $iterator->reduce($reference, $state, $game);
             }
         }
+        return new BasicStateResult($state, $seen);
     }
 }
 
@@ -60,6 +64,7 @@ class BasicStateResult implements StateResult
         return $this->seen;
     }
     
+    // FIXME: where to put this ?
     public function saveToFile($output_file)
     {
         return file_put_contents($output_file, serialize([ 'state' => $this->state, 'seen' => $this->seen ]));

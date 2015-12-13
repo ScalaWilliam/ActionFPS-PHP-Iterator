@@ -8,13 +8,26 @@ class Processor
         $state = $iterator->initialState();
         $seen = [];
         $games = $reference->getAllGames();
-        print_r($games);
+        
         foreach ($games as $game) {
             $seen[] = $game->id;
             $state = $iterator->reduce($reference, $state, $game);
         }
         return new BasicStateResult($state, $seen);
     }
+    
+    // TODO: write this
+    public function processNew(ActionReference $reference, ActionIterator $iterator)
+    {
+	    $state = []; // use local ? 
+	    $seen = [];  // //
+	    
+	    $games = $reference->getNewGames();
+	    foreach ($games as $game) {
+			if(!in_array($game->id, $seen))
+			    $state = $iterator->reduce($reference, $state, $game);
+		}
+	}
 }
 
 

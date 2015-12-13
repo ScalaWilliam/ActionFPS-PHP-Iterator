@@ -107,8 +107,6 @@ class Clanwar implements JsonSerializable
         }
         $game_start = new DateTime($game->gameTime);
         $this->endTime = date('Y-m-d\TH:i:s', $game_start->getTimestamp() + 60 * $game->duration); // FIXME
-        
-        $this->awardTrophees();
         $this->decideWinner();
     }
     
@@ -137,6 +135,11 @@ class Clanwar implements JsonSerializable
         $this->winner = ($delta_wins != 0) ? $this->clans[0]->clan : null;
         //$this->completed = $this->winner && count($this->games) > 1;
         $this->completed = ($this->winner && count($this->games) > 1) || count($this->games) >= 3;
+        
+        if($this->completed)
+        {
+			$this->awardTrophees();
+		}
     }
     
     public function jsonSerialize() {

@@ -16,21 +16,17 @@ class Processor
         return new BasicStateResult($state, $seen);
     }
     
-    // TODO: write this
-    public function processNew(ActionReference $reference, ActionIterator $iterator)
+    public function processNew(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state)
     {
-	    $state = []; // use local ? 
-	    $seen = [];  // //
-	    
-	    $games = $reference->getNewGames();
-	    foreach ($games as $game) {
-			if(!in_array($game->id, $seen))
-			{
-				$seen[] = $game->id;
-			    $state = $iterator->reduce($reference, $state, $game);
-			}
-		}
-	}
+        $games = $reference->getNewGames();
+        foreach ($games as $game) {
+            if(!in_array($game->id, $initial_state->seen))
+            {
+                $initial_state->seen[] = $game->id;
+                $initial_state->state = $iterator->reduce($reference, $initial_state->state, $game);
+            }
+        }
+    }
 }
 
 
@@ -62,6 +58,23 @@ class BasicStateResult implements StateResult
     public function getSeen()
     {
         return $this->seen;
+    }
+    
+    public function saveToFile($output_file)
+    {
+        return file_put_contents($output_file, serialize([ 'state' => $this->state, 'seen' => $this->seen ]));
+    }
+    
+    public function loadFromFile($input_file)
+    {
+        $serialized_data = file_get_contents($input_file);
+        if(!$serialized_data)
+            return false;
+            
+        $data = unserialize($serialized_data);
+        $this->state = $data['state'];
+        $this->seen = $data['seen'];
+        return true;
     }
 
 }

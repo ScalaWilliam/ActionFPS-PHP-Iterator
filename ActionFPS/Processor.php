@@ -25,7 +25,7 @@ class Processor
         foreach ($games as $game) {
             if(!in_array($game->id, $seen))
             {
-                $seen = $game->id;
+                $seen[] = $game->id;
                 $state->state = $iterator->reduce($reference, $state, $game);
             }
         }

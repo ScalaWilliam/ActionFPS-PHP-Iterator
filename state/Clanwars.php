@@ -117,12 +117,18 @@ class Clanwar implements JsonSerializable
         {
             foreach($clan->players as $player)
             {
+				// MVP
                 if($player->score > $mvp_points[$i])
                 {
                     $clan->mvp->name = $player->name;
                     if(isset($player->user)) $clan->mvp->user = $player->user; 
                     $mvp_points[$i] = $player->score;
                 }
+                
+                // Flag expert
+                if($player->flags >= $clan->flags)
+                {
+				}
             }
         }
 
@@ -150,6 +156,7 @@ class Clanwar implements JsonSerializable
 
 class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
 {   
+	// FIXME: $state->completed = [], $state->incomplete = []
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
         $clangame = isset($game->teams[0]->clan) && isset($game->teams[1]->clan)

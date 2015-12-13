@@ -15,6 +15,8 @@ class GamesCachedActionReference extends ActualActionReference {
     
     function getNewGames()
     {
-        return [ json_decode( $_SERVER['argv'][1] ) ];
+        $lines = $this->process_lines(fopen("php://stdin", "r"));
+        print_r($lines);
+        return $lines;
     }
 }

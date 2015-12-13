@@ -5,10 +5,6 @@ header("Content-Type: application/json");
 require_once "state/PlayerStats.php";
 require_once "state/Clanwars.php";
 
-file_put_contents('messages', print_r($_SERVER['argv'], true), FILE_APPEND);
-
-$game = json_decode($_SERVER['argv'][1]);
-
 $playerstats = new PlayerStatsAccumulator();
 $clanwars = new ClanwarsAccumulator();
 

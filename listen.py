@@ -1,6 +1,7 @@
 # Drakas listen script
 
-import subprocess, pipes
+import subprocess
+from subprocess import Popen, PIPE, STDOUT
 from sseclient import SSEClient
 
 # Reconnect automatically - it works, I checked it :D
@@ -10,4 +11,5 @@ while True:
 	# messages = SSEClient('http://api.actionfps.com/server-updates/')
 	for message in messages:
 		print(message)
-		subprocess.call(["php", "take.php", str(message) ])
+		p = Popen(['php', 'take.php'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+		p.communicate(input=str(message))

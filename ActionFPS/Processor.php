@@ -23,6 +23,7 @@ class Processor
 		
         $games = $reference->getNewGames();
         foreach ($games as $game) {
+            file_put_contents('messages', print_r($game, true), FILE_APPEND);
             if(!in_array($game->id, $seen))
             {
                 $seen[] = $game->id;

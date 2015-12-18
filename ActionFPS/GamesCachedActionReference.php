@@ -16,7 +16,6 @@ class GamesCachedActionReference extends ActualActionReference {
     function getNewGames()
     {
         $lines = $this->process_lines(fopen("php://stdin", "r"));
-        print_r($lines);
         return $lines;
     }
 }

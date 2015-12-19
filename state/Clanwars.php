@@ -105,8 +105,7 @@ class Clanwar implements JsonSerializable
                 $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }
         }
-        $game_start = new DateTime($game->gameTime);
-        $this->endTime = date('Y-m-d\TH:i:s', $game_start->getTimestamp() + 60 * $game->duration); // FIXME
+        $this->endTime = $game->endTime;
         $this->decideWinner();
     }
     
@@ -156,7 +155,7 @@ class Clanwar implements JsonSerializable
 
 class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
 {   
-    // FIXME: $state->completed = [], $state->incomplete = []
+    // FIXME: $state->completed = [], $state->incomplete = [], $state->unprocessed = []
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
         $clangame = isset($game->teams[0]->clan) && isset($game->teams[1]->clan)
@@ -164,22 +163,33 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
         
         if(!$clangame) return $state;
         
-        for($i = count($state)-1; $i >= 0; --$i)
+        for (end($state->incomplete); key($state->incomplete)!==null; prev($state->incomplete))
         {
-            if($state[$i]->timeDiff($game) >= 10 * 60) break;
-            else if($state[$i]->isNext($game))
+            $id = key($state->incomplete);
+            if($state->incomplete[$id]->timeDiff($game) >= 10 * 60) break;
+            else if($state->incomplete[$id]->isNext($game))
             {
-                $state[$i]->addGame($game);
+                $state->incomplete[$id]->addGame($game);
+                if($state->incomplete[$id]->completed)
+                {
+                    $war = $state->incomplete[$id];
+                    $state->completed[$id] = $war;
+                    $state->unprocessed[] = $id;
+                    unset($state->incomplete[$i]);
+                }
                 return $state;
             }
         }
         
-        $state[] = new Clanwar($game);
+        $war = new Clanwar($game);
+        $state->incomplete[$war->startTime] = $war;
         return $state;
     }
 
     public function initialState()
     {
+        $state = new stdClass();
+        $state->incomplete = $state->completed = $state->unprocessed = [];
         return [];
     }
 }

@@ -9,6 +9,7 @@ require_once "state/ClanStats.php";
 //$game_counter = new GameCounter();
 $playerstats = new PlayerStatsAccumulator();
 $clanwars = new ClanwarsAccumulator();
+$clanstats = new ClanStatsAccumulator();
 
 $reference = new ActionFPS\GamesCachedActionReference();
 $proc = new ActionFPS\Processor();
@@ -19,11 +20,11 @@ $clanwars_state = $proc->processFromScratch($reference, $clanwars);
 $clanwars_state->saveToFile("data/clanwars.json");
 
 $state = $clanwars_state->getState();
-$clanwars = [];
+$wars = [];
 foreach($state->unprocessed as $war)
 {
-    $clanwars[] = $state->completed[$war];
+    $wars[] = $state->completed[$war];
 }
-$proc->processNew($reference, $clanstats, new ActionFPS\BasicStateResult([], []), $clanwars)->saveToFile("data/clanstats.json");
+$proc->processNew($reference, $clanstats, $clanstats_state, $wars)->saveToFile("data/clanstats.json");
 
 echo "\n" . microtime(true) - $start_time;

@@ -26,12 +26,10 @@ $clanwars_state = $proc->processNewGames($reference, $clanwars, $clanwars_state)
 $clanwars_state->saveToFile("data/clanwars.json");
 
 $state = $clanwars_state->getState();
-$clanwars = [];
-
+$wars = [];
 foreach($state->unprocessed as $war)
 {
-    $clanwars[] = $state->completed[$war];
+    $wars[] = $state->completed[$war];
 }
-
-$proc->processNew($reference, $clanstats, $clanstats_state, $clanwars)->saveToFile("data/clanstats.json");
+$proc->processNew($reference, $clanstats, $clanstats_state, $wars)->saveToFile("data/clanstats.json");
 ?>

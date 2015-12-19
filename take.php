@@ -22,9 +22,10 @@ $clanwars_state->loadFromFile("data/clanwars.json");
 $clanstats_state->loadFromFile("data/clanstats.json");
 
 $proc->processNewGames($reference, $playerstats, $playerstats_state)->saveToFile("data/playerstats.json");
-$proc->processNewGames($reference, $clanwars, $clanwars_state)->saveToFile("data/clanwars.json");
+$clanstats_state = $proc->processNewGames($reference, $clanwars, $clanwars_state);
+$clanstats_state->saveToFile("data/clanwars.json");
 
-$state = $state_result->getState();
+$state = $clanstats_state->getState();
 $clanwars = [];
 
 foreach($state->unprocessed as $war)

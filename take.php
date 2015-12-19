@@ -4,7 +4,7 @@ header("Content-Type: application/json");
 
 require_once "state/PlayerStats.php";
 require_once "state/Clanwars.php";
-require_once "state/Clanstats.php";
+require_once "state/ClanStats.php";
 
 $playerstats = new PlayerStatsAccumulator();
 $clanwars = new ClanwarsAccumulator();

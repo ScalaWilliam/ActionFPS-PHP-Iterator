@@ -16,7 +16,7 @@ class Processor
         return new BasicStateResult($state, $seen);
     }
     
-    public function processNew(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state)
+    public function processNewGames(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state)
     {
 		$state = $initial_state->getState();
 		$seen = $initial_state->getSeen();
@@ -28,6 +28,22 @@ class Processor
             {
                 $seen[] = $game->id;
                 $state->state = $iterator->reduce($reference, $state, $game);
+            }
+        }
+        return new BasicStateResult($state, $seen);
+    }
+    
+    public function processNew(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state, $feed)
+    {
+        $state = $initial_state->getState();
+		$seen = $initial_state->getSeen();
+		
+        $games = $reference->getNewGames();
+        foreach ($feed as $new) {
+            if(!in_array($new->id, $seen))
+            {
+                $seen[] = $new->id;
+                $state->state = $iterator->reduce($reference, $state, $new);
             }
         }
         return new BasicStateResult($state, $seen);

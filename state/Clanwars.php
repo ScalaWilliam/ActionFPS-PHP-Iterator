@@ -1,6 +1,7 @@
 <?php
 class Clanwar implements JsonSerializable
 {
+    public $id = "";
     public $startTime = "";
     public $endTime = "";
     public $clans = array();
@@ -12,7 +13,7 @@ class Clanwar implements JsonSerializable
     
     public function __construct($game)
     {
-        $this->startTime = $game->gameTime;
+        $this->id = $this->startTime = $game->gameTime;
         $this->clans = array(new stdClass(), new stdClass());
         for($i = 0; $i < 2; ++$i)
         {
@@ -185,7 +186,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
         
         // no matching war was found for this game - a new war has begun :o
         $war = new Clanwar($game);
-        $state->incomplete[$war->startTime] = $war;
+        $state->incomplete[$war->id] = $war;
         return $state;
     }
 

@@ -25,6 +25,6 @@ foreach($state->unprocessed as $war)
 {
     $wars[] = $state->completed[$war];
 }
-$proc->processNew($reference, $clanstats, new ActionFPS\BasicStateResult([], []), $wars)->saveToFile("data/clanstats.json");
+$proc->processNew($reference, $clanstats, new ActionFPS\BasicStateResult($clanstats->initialState(), []), $wars)->saveToFile("data/clanstats.json");
 
 echo "\n" . microtime(true) - $start_time;

@@ -158,11 +158,14 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
     // FIXME: $state->completed = [], $state->incomplete = [], $state->unprocessed = []
     public function reduce(ActionFPS\ActionReference $reference, $state, $game)
     {
+        // ignore non-clangames
         $clangame = isset($game->teams[0]->clan) && isset($game->teams[1]->clan)
             && $game->teams[0]->clan != $game->teams[1]->clan;
         
         if(!$clangame) return $state;
         
+        // go through incomplete clanwars that were played recently enough
+        // find out if the new game matches one of them
         for (end($state->incomplete); key($state->incomplete)!==null; prev($state->incomplete))
         {
             $id = key($state->incomplete);
@@ -172,8 +175,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
                 $state->incomplete[$id]->addGame($game);
                 if($state->incomplete[$id]->completed)
                 {
-                    $war = $state->incomplete[$id];
-                    $state->completed[$id] = $war;
+                    $state->completed[$id] = $state->incomplete[$id];
                     $state->unprocessed[] = $id;
                     unset($state->incomplete[$i]);
                 }
@@ -181,6 +183,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
             }
         }
         
+        // no matching war was found for this game - a new war has begun :o
         $war = new Clanwar($game);
         $state->incomplete[$war->startTime] = $war;
         return $state;

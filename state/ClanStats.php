@@ -34,6 +34,18 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
     
     public function reduce(ActionFPS\ActionReference $reference, $state, $war)
     {
+        $time = new DateTime($war->startTime);
+        $time = $time->getTimestamp();
+        if($time >= $state->lastupdate)
+        {
+            $state->states[$state->lastupdate] = [];
+            foreach($state->now as $clan => $clan_state)
+            {
+                $state->states[$state->lastupdate][$clan] = clone $clan_state;
+            }
+            $state->lastupdate = strtotime("tomorrow", $time);
+        }
+    
         $winner_id = $war->clans[0]->clan;
         $loser_id = $war->clans[1]->clan;
        
@@ -42,19 +54,19 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
         {
             $id = $clan->clan;
             $win = $n == 0;
-            if(!$this->clanExists($state, $clan->clan)) $state[$id] = new ClanStats($id);
+            if(!$this->clanExists($state->now, $clan->clan)) $state->now[$id] = new ClanStats($id);
             if(!$tie) $state[$id]->{$win ? 'wins' : 'losses'}++;
-            else $state[$id]->ties++;
-            $state[$id]->wars++;
-            $state[$id]->games += count($war->games);
-            $state[$id]->gamewins += $clan->wins;
-            if(isset($clan->flags)) $state[$id]->flags += $clan->flags; 
-            $state[$id]->frags += $clan->frags;
-            $state[$id]->score += $clan->score;
+            else $state->now[$id]->ties++;
+            $state->now[$id]->wars++;
+            $state->now[$id]->games += count($war->games);
+            $state->now[$id]->gamewins += $clan->wins;
+            if(isset($clan->flags)) $state->now[$id]->flags += $clan->flags; 
+            $state->now[$id]->frags += $clan->frags;
+            $state->now[$id]->score += $clan->score;
         }
 
-        $winner = &$state[$winner_id];
-        $loser = &$state[$loser_id];
+        $winner = &$state->now[$winner_id];
+        $loser = &$state->now[$loser_id];
 
         $delta = $winner->elo - $loser->elo;
         $p = 1/(1+pow(10, -$delta/400)); // probability for the winning clan to win
@@ -76,6 +88,10 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
 
     public function initialState()
     {
+        $state = new stdClass();
+        $state->lastupdate = 0;
+        $state->now = [];
+        $state->stats = [];
         return [];
     }
 }

@@ -122,7 +122,7 @@ class Clanwar implements JsonSerializable
     {
         $clan->trophees->{$trophee} = new stdClass();
         if($user) $clan->trophees->{$trophee}->user = $user;
-        $clan->trophees->{$trophee}->nickname = $nickname;
+        $clan->trophees->{$trophee}->name = $nickname;
     }
     
     public function awardTrophees()

@@ -27,5 +27,5 @@ $clanwars_state->saveToFile("data/clanwars.json");
 
 $state = $clanwars_state->getState();
 $wars = $state->completed;
-$proc->processNew($reference, $clanstats, $clanstats_state, $wars)->saveToFile("data/clanstats.json");
+$proc->processFromScratch($reference, $clanstats, $wars)->saveToFile("data/clanstats.json");
 ?>

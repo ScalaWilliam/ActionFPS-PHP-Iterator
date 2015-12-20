@@ -55,7 +55,7 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
             $id = $clan->clan;
             $win = $n == 0;
             if(!$this->clanExists($state->now, $clan->clan)) $state->now[$id] = new ClanStats($id);
-            if(!$tie) $state[$id]->{$win ? 'wins' : 'losses'}++;
+            if(!$tie) $state->now[$id]->{$win ? 'wins' : 'losses'}++;
             else $state->now[$id]->ties++;
             $state->now[$id]->wars++;
             $state->now[$id]->games += count($war->games);

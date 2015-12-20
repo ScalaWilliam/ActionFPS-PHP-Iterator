@@ -32,6 +32,24 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
         return array_key_exists($id, $state);
     }
     
+    public static function sortFunc($a, $b)
+    {
+        if($a->elo = $b->elo) return 0;
+        return $a->elo > $b->elo ? -1 : 1;
+    }
+    
+    public function sortClans(&$clans)
+    {
+        usort($clans, 'ClansStatsAccumulator::sortFunc');
+        
+        $i = 1;
+        foreach($clans as &$clan)
+        {
+            $clan->rank = $i;
+            $i++;
+        }
+    }
+    
     public function reduce(ActionFPS\ActionReference $reference, $state, $war)
     {
         $time = new DateTime($war->startTime);
@@ -43,6 +61,7 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
             {
                 $state->states[$state->lastupdate][$clan] = clone $clan_state;
             }
+            $this->sortClans($state->states[$state->lastupdate]);
             $state->lastupdate = strtotime("tomorrow", $time);
         }
     
@@ -83,6 +102,7 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
             $winner->elo += $k * (1 - $p);
             $loser->elo  -= $k * (1 - $p);
         }
+        //$this->sortClans($state->now);
         return $state;
     }
 

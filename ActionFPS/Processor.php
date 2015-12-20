@@ -44,12 +44,11 @@ class Processor
         $state = $initial_state->getState();
 		$seen = $initial_state->getSeen();
 		
-        $games = $reference->getNewGames();
-        foreach ($feed as $new) {
-            if(!in_array($new->id, $seen))
+        foreach ($elements as $element) {
+            if(!in_array($element->id, $seen))
             {
-                $seen[] = $new->id;
-                $state->state = $iterator->reduce($reference, $state, $new);
+                $seen[] = $element->id;
+                $state->state = $iterator->reduce($reference, $state, $element);
             }
         }
         return new BasicStateResult($state, $seen);

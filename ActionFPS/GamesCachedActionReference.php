@@ -13,10 +13,16 @@ class GamesCachedActionReference extends ActualActionReference {
         return $this->process_lines(fopen("all.tsv", "r"));
     }
     
+    function getAllClanwars()
+    {
+        
+    }
+    
     function getNewGames()
     {
-        stream_set_blocking(false);
-        $lines = $this->process_lines(fopen("php://stdin", "r"));
+        $fp = fopen("php://stdin", "r");
+        stream_set_blocking($fp, false);
+        $lines = $this->process_lines($fp);
         return $lines;
     }
 }

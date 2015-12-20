@@ -22,7 +22,8 @@ class GamesCachedActionReference extends ActualActionReference {
     {
         $fp = fopen("php://stdin", "r");
         stream_set_blocking($fp, false);
-        $lines = $this->process_lines($fp);
+        $lines = [ json_decode(stream_get_contents($fp)) ];
+        fclose($stream);
         return $lines;
     }
 }

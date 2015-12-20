@@ -127,7 +127,7 @@ class Clanwar implements JsonSerializable
     
     public function awardTrophees()
     {
-        $mvp_points = [ -1000, 1000 ];
+        $mvp_points = [ -1000, -1000 ];
         foreach($this->clans as $i => &$clan)
         {
             foreach($clan->players as $player)

@@ -7,8 +7,9 @@ class ClanStats implements JsonSerializable
     public $wins = 0;
     public $losses = 0;
     public $ties = 0;
-    public $clanwars = 0;
+    public $wars = 0;
     public $games = 0;
+    public $gamewins = 0;
     public $score = 0;
     public $flags = 0;
     public $frags = 0;

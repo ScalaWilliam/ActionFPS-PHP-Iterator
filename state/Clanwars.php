@@ -15,6 +15,7 @@ class Clanwar implements JsonSerializable
     {
         $this->id = $this->startTime = $game->gameTime;
         $this->clans = array(new stdClass(), new stdClass());
+        $this->server = $game->server;
         
         $clans = array($game->teams[0]->clan, $game->teams[1]->clan);
         sort($clans);

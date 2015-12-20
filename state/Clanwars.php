@@ -1,4 +1,15 @@
 <?php
+class Trophee
+{
+    public $name;
+    
+    public function __construct($name, $user = null)
+    {
+         if($user) $this->user = $user;
+         $this->name = $name;
+    }
+}
+
 class Clanwar implements JsonSerializable
 {
     public $id = "";
@@ -27,7 +38,7 @@ class Clanwar implements JsonSerializable
             $this->clans[$i]->won = [];
             $this->clans[$i]->score = $this->clans[$i]->flags = $this->clans[$i]->frags = 0;
             $this->clans[$i]->players = [];
-            $this->clans[$i]->mvp = new stdClass(); // ugh
+            $this->clans[$i]->trophees = new stdClass();
 
         }
         sort($this->clans);
@@ -118,6 +129,11 @@ class Clanwar implements JsonSerializable
         $this->decideWinner();
     }
     
+    public function awardTrophee(&$clan, $trophee, $nickname, $user)
+    {
+        $clan->trophees->{$trophee} = new Trophee($nickname, $user);
+    }
+    
     public function awardTrophees()
     {
         $mvp_points = [ -1000, 1000 ];
@@ -127,15 +143,21 @@ class Clanwar implements JsonSerializable
             {
                 // MVP
                 if($player->score > $mvp_points[$i])
-                {
-                    $clan->mvp->name = $player->name;
-                    if(isset($player->user)) $clan->mvp->user = $player->user; 
+                { 
+                    $this->awardTrophee($clan, 'mvp', $player->name, isset($player->user)) ? $player->user : null);
                     $mvp_points[$i] = $player->score;
                 }
                 
                 // Flag expert
                 if($player->flags >= $clan->flags)
                 {
+                    $this->awardTrophee($clan, 'flag_expert', $player->name, isset($player->user)) ? $player->user : null);
+                }
+                
+                // Frag expert
+                if($player->frags >= 0.75 * $clan->frags)
+                {
+                    $this->awardTrophee($clan, 'frag_expert', $player->name, isset($player->user)) ? $player->user : null);
                 }
             }
         }

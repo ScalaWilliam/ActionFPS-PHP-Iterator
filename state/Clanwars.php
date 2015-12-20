@@ -144,20 +144,20 @@ class Clanwar implements JsonSerializable
                 // MVP
                 if($player->score > $mvp_points[$i])
                 { 
-                    $this->awardTrophee($clan, 'mvp', $player->name, isset($player->user)) ? $player->user : null);
+                    $this->awardTrophee($clan, 'mvp', $player->name, isset($player->user) ? $player->user : null);
                     $mvp_points[$i] = $player->score;
                 }
                 
                 // Flag expert
                 if($player->flags >= $clan->flags)
                 {
-                    $this->awardTrophee($clan, 'flag_expert', $player->name, isset($player->user)) ? $player->user : null);
+                    $this->awardTrophee($clan, 'flag_expert', $player->name, isset($player->user) ? $player->user : null);
                 }
                 
                 // Frag expert
                 if($player->frags >= 0.75 * $clan->frags)
                 {
-                    $this->awardTrophee($clan, 'frag_expert', $player->name, isset($player->user)) ? $player->user : null);
+                    $this->awardTrophee($clan, 'frag_expert', $player->name, isset($player->user) ? $player->user : null);
                 }
             }
         }

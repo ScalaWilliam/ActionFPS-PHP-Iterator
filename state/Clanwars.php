@@ -64,6 +64,9 @@ class Clanwar implements JsonSerializable
     public function isNext($game)
     {
         $teamsize = min(count($game->teams[0]->players), count($game->teams[1]->players));
+        
+        $current_clans = array($this->clans[0]->clan, $this->clans[1]->clan);
+        sort($current_clans);
 
         $clans = array($game->teams[0]->clan, $game->teams[1]->clan);
         sort($clans);
@@ -71,7 +74,7 @@ class Clanwar implements JsonSerializable
         $interval = $this->timeDiff($game);
 
         return ($game->server == $this->server
-         && $clans == $this->clans
+         && $clans == $current_clans
          && $teamsize == $this->teamsize
          && $interval <= 10*60
          && !$this->completed);
@@ -180,7 +183,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
                 $state->incomplete[$id]->addGame($game);
                 if($state->incomplete[$id]->completed)
                 {
-                    $state->completed[$id] = clone $state->incomplete[$id];
+                    $state->completed[$id] = $state->incomplete[$id];
                     $state->unprocessed[] = $id;
                     unset($state->incomplete[$i]);
                 }

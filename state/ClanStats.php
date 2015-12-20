@@ -92,6 +92,6 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
         $state->lastupdate = 0;
         $state->now = [];
         $state->stats = [];
-        return [];
+        return $state;
     }
 }

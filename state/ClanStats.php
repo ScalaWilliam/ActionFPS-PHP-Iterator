@@ -40,7 +40,7 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
     
     public function sortClans(&$clans)
     {
-        usort($clans, 'ClansStatsAccumulator::sortFunc');
+        usort($clans, 'ClanStatsAccumulator::sortFunc');
         
         $i = 1;
         foreach($clans as &$clan)

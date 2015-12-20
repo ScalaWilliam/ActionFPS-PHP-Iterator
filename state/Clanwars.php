@@ -180,7 +180,7 @@ class ClanwarsAccumulator implements ActionFPS\OrderedActionIterator
                 $state->incomplete[$id]->addGame($game);
                 if($state->incomplete[$id]->completed)
                 {
-                    $state->completed[$id] = $state->incomplete[$id];
+                    $state->completed[$id] = clone $state->incomplete[$id];
                     $state->unprocessed[] = $id;
                     unset($state->incomplete[$i]);
                 }

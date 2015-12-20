@@ -7,7 +7,6 @@ class Processor
     {
         $state = $iterator->initialState();
         $seen = [];
-        $elements = $reference->getAllGames();
         
         foreach ($elements as $element) {
             $seen[] = $element->id;
@@ -39,7 +38,7 @@ class Processor
         return new BasicStateResult($state, $seen);
     }
     
-    public function processNew(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state, $feed)
+    public function processNew(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state, $elements)
     {
         $state = $initial_state->getState();
 		$seen = $initial_state->getSeen();

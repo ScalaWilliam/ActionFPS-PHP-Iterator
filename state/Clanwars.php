@@ -15,9 +15,13 @@ class Clanwar implements JsonSerializable
     {
         $this->id = $this->startTime = $game->gameTime;
         $this->clans = array(new stdClass(), new stdClass());
+        
+        $clans = array($game->teams[0]->clan, $game->teams[1]->clan);
+        sort($clans);
+        
         for($i = 0; $i < 2; ++$i)
         {
-            $this->clans[$i]->clan = '';
+            $this->clans[$i]->clan = $clans[$i];
             $this->clans[$i]->wins = 0;
             $this->clans[$i]->won = [];
             $this->clans[$i]->score = $this->clans[$i]->flags = $this->clans[$i]->frags = 0;
@@ -82,7 +86,7 @@ class Clanwar implements JsonSerializable
         foreach($game->teams as $n => $team)
         {
             $win = $n == 0 && !$tie;
-            $id = $team->clan == $this->clans[0] ? 0 : 1;
+            $id = $team->clan == $this->clans[0]->clan ? 0 : 1;
             if($win)
             {
                 $this->clans[$id]->wins++;

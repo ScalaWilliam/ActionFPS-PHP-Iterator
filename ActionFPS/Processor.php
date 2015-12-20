@@ -3,17 +3,23 @@ namespace ActionFPS;
 
 class Processor
 {
-    public function processFromScratch(ActionReference $reference, ActionIterator $iterator)
+    public function processFromScratch(ActionReference $reference, ActionIterator $iterator, $elements)
     {
         $state = $iterator->initialState();
         $seen = [];
-        $games = $reference->getAllGames();
+        $elements = $reference->getAllGames();
         
-        foreach ($games as $game) {
-            $seen[] = $game->id;
-            $state = $iterator->reduce($reference, $state, $game);
+        foreach ($elements as $element) {
+            $seen[] = $element->id;
+            $state = $iterator->reduce($reference, $state, $element);
         }
         return new BasicStateResult($state, $seen);
+    }
+    
+    public function processGamesFromScratch(ActionReference $reference, ActionIterator $iterator)
+    {
+        $games = $reference->getAllGames();
+        return $this->processFromScratch($reference, $iterator, $games);
     }
     
     public function processNewGames(ActionReference $reference, ActionIterator $iterator, StateResult $initial_state)

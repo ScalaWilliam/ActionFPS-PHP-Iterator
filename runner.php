@@ -15,16 +15,12 @@ $reference = new ActionFPS\GamesCachedActionReference();
 $proc = new ActionFPS\Processor();
 
 $start_time = microtime(true);
-$proc->processFromScratch($reference, $playerstats)->saveToFile("data/playerstats.json");
-$clanwars_state = $proc->processFromScratch($reference, $clanwars);
+$proc->processGamesFromScratch($reference, $playerstats)->saveToFile("data/playerstats.json");
+$clanwars_state = $proc->processGamesFromScratch($reference, $clanwars);
 $clanwars_state->saveToFile("data/clanwars.json");
 
 $state = $clanwars_state->getState();
-$wars = [];
-foreach($state->unprocessed as $war)
-{
-    $wars[] = $state->completed[$war];
-}
+$wars = $state->completed;
 $proc->processNew($reference, $clanstats, new ActionFPS\BasicStateResult($clanstats->initialState(), []), $wars)->saveToFile("data/clanstats.json");
 
 echo "\n" . microtime(true) - $start_time;

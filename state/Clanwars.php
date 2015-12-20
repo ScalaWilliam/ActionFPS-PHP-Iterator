@@ -1,15 +1,4 @@
 <?php
-class Trophee
-{
-    public $name;
-    
-    public function __construct($name, $user = null)
-    {
-         if($user) $this->user = $user;
-         $this->name = $name;
-    }
-}
-
 class Clanwar implements JsonSerializable
 {
     public $id = "";
@@ -131,7 +120,9 @@ class Clanwar implements JsonSerializable
     
     public function awardTrophee(&$clan, $trophee, $nickname, $user)
     {
-        $clan->trophees->{$trophee} = new Trophee($nickname, $user);
+        $clan->trophees->{$trophee} = new stdClass();
+        if($user) $clan->trophees->{$trophee}->user = $user;
+        $clan->trophees->{$trophee}->nickname = $nickname;
     }
     
     public function awardTrophees()

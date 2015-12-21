@@ -3,7 +3,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 header("Content-Type: application/json");
 
 // <!-- FIXME: more elegant way to call these dependencies (class Clanwar and ActionFPS\BasicStateResult)
-require_once "state/Clanwars.php";
+require_once __DIR__ . "/../state/Clanwars.php";
 $processor = new ActionFPS\Processor();
 // -->
 

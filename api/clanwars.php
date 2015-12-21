@@ -20,7 +20,7 @@ function sort_func($a, $b)
 
 $clanwars_state = new ActionFPS\BasicStateResult([], []);
 
-$clanwars_state->loadFromFile("data/clanwars.json");
+$clanwars_state->loadFromFile(__DIR__ . "/../data/clanwars.json");
 $clanwars = $clanwars_state->getState();
 
 $selected = [];

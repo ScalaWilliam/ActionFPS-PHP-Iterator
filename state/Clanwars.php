@@ -118,7 +118,7 @@ class Clanwar implements JsonSerializable
         $this->decideWinner();
     }
     
-    public function awardtrophy(&$clan, $trophy, $nickname, $user)
+    public function awardTrophy(&$clan, $trophy, $nickname, $user)
     {
         $clan->Trophies->{$trophy} = new stdClass();
         if($user) $clan->Trophies->{$trophy}->user = $user;
@@ -135,20 +135,20 @@ class Clanwar implements JsonSerializable
                 // MVP
                 if($player->score > $mvp_points[$i])
                 { 
-                    $this->awardtrophy($clan, 'mvp', $player->name, isset($player->user) ? $player->user : null);
+                    $this->awardTrophy($clan, 'mvp', $player->name, isset($player->user) ? $player->user : null);
                     $mvp_points[$i] = $player->score;
                 }
                 
                 // Flag expert
                 if($player->flags >= $clan->flags)
                 {
-                    $this->awardtrophy($clan, 'flag_expert', $player->name, isset($player->user) ? $player->user : null);
+                    $this->awardTrophy($clan, 'flag_expert', $player->name, isset($player->user) ? $player->user : null);
                 }
                 
                 // Frag expert
                 if($player->frags >= 0.75 * $clan->frags)
                 {
-                    $this->awardtrophy($clan, 'frag_expert', $player->name, isset($player->user) ? $player->user : null);
+                    $this->awardTrophy($clan, 'frag_expert', $player->name, isset($player->user) ? $player->user : null);
                 }
             }
         }

@@ -27,11 +27,13 @@ $selected = [];
 
 foreach($clanwars->completed as $id => $clanwar)
 {
+    if(!empty($_GET['clan']) && $clanwar->clans[0]->clan != $_GET['clan'] && $clanwar->clans[1]->clan != $_GET['clan']) continue;
     $selected[$id] = $clanwar;
 }
 
 if(empty($_GET['completed'])) foreach($clanwars->incomplete as $id => $clanwar)
 {
+    if(!empty($_GET['clan']) && $clanwar->clans[0]->clan != $_GET['clan'] && $clanwar->clans[1]->clan != $_GET['clan']) continue;
     $selected[$id] = $clanwar;
 }
 

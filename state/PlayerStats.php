@@ -20,6 +20,7 @@ class PlayerStats implements JsonSerializable
     }
     
     public function jsonSerialize() {
+        if(isset($this->contrib)) unset($this->contrib);
         return $this;
     }
 }
@@ -81,10 +82,10 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 foreach($team->players as $player) if(isset($player->user))
                 {
                     $id = $player->user;
-                    $points = ($win ? 1 : -1) * $k * ($modifier - $p) * count($team->players);
+                    $points = ($win ? 1 : -1) * $k * ($modifier - $p);
                     $state[$id]->elo += $points >= 0 ?
-                        $state[$id]->contrib * $points :
-                        (1-$state[$id]->contrib) * $points;
+                        $state[$id]->contrib * $points * count($team->players):
+                        (1-$state[$id]->contrib) * $points * count($team->players) / (count($team->players) - 1);
                 }
             }
         }

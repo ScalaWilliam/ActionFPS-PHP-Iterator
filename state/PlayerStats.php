@@ -72,7 +72,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
 
             $p = 1/(1+pow(10, -$delta/400)); // probability for the winning team to win
 
-            $k = 40;
+            $k = 40 * $players_count;
             $modifier = $tie ? 0.5 : 1;
 
             foreach($game->teams as $n => &$team)

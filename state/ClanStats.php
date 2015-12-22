@@ -90,7 +90,7 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
         $delta = $winner->elo - $loser->elo;
         $p = 1/(1+pow(10, -$delta/400)); // probability for the winning clan to win
 
-        $k = 40 * count($war->games);
+        $k = 40;
 
         if($tie)
         {

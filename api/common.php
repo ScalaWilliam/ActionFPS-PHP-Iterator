@@ -55,6 +55,7 @@ function get_clanwars($count = null, $completed = null, $clan = null, $wid = nul
 
 function get_clanstats($count = 15, $clan = null, $time = false)
 {
+    global $sort_param;
     $clanstats_state = new ActionFPS\BasicStateResult([], []);
 
     $clanstats_state->loadFromFile(__DIR__ . "/../data/clanstats.json");

@@ -53,7 +53,7 @@ function get_clanwars($count = null, $completed = null, $clan = null, $wid = nul
             if($clan && $clanwar->clans[0]->clan != $clan && $clanwar->clans[1]->clan != $clan) continue;
             $selected[$id] = $clanwar;
         }
-        usort($selected, 'sort_func');
+        uasort($selected, 'sort_func');
     }
     else
     {
@@ -95,6 +95,9 @@ function get_clanstats($count = 15, $clan = null, $time = false)
         }
         else
             $_clan->rank = null;
+        
+        
+        $_clan->name = find_clan($_clan->clan)->name;
     }
     
     $stats = new stdClass();

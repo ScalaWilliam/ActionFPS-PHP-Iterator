@@ -61,7 +61,7 @@ function get_clanstats($count = 15, $clan = null, $time = false)
     $clanstats = $clanstats_state->getState();
     
     $sort_param = 'elo';
-    usort($clanstats->now);
+    usort($clanstats->now, 'sort_func');
     
     $i = 1;
     foreach($clanstats->now as &$_clan)

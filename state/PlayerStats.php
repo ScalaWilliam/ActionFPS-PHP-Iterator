@@ -83,9 +83,10 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 {
                     $id = $player->user;
                     $points = ($win ? 1 : -1) * $k * ($modifier - $p);
-                    $state[$id]->elo += $points >= 0 ?
+                    $state[$id]->elo += $points;
+                    /*$state[$id]->elo += $points >= 0 ?
                         $state[$id]->contrib * $points * count($team->players):
-                        (1-$state[$id]->contrib) * $points * count($team->players) / (count($team->players) - 1);
+                        (1-$state[$id]->contrib) * $points * count($team->players) / (count($team->players) - 1);*/
                 }
             }
         }

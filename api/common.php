@@ -10,7 +10,7 @@ function sort_func($a, $b)
 {
     global $sort_param;
     if($a->{$sort_param} == $b->{$sort_param}) return 0;
-    return ($a->{$sort_param} > $b->{$sort_param} && $b->{$sort_param} !== null) ? -1 : 1;
+    return $a->{$sort_param} > $b->{$sort_param} ? -1 : 1;
 }
 
 function get_clans()
@@ -100,7 +100,7 @@ function get_clanstats($count = 15, $clan = null, $time = false)
         $_clan->name = find_clan($_clan->clan)->name;
     }
     
-    $sort_param = 'rank';
+    $sort_param = 'wars';
     uasort($clanstats->now, 'sort_func');
     
     $stats = new stdClass();

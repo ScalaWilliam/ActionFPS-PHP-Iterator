@@ -13,6 +13,21 @@ function sort_func($a, $b)
     return $a->{$sort_param} > $b->{$sort_param} ? -1 : 1;
 }
 
+function get_clans()
+{
+    $reference = new ActionFPS\GamesCachedActionReference();
+    return $reference->getClans();
+}
+
+function find_clan($id)
+{
+    static $clans = get_clans();
+    foreach($clans as $clan) if($clan->id == $id)
+    {
+        return $clan;
+    }
+}
+
 function get_clanwars($count = null, $completed = null, $clan = null, $wid = null)
 {
     global $sort_param;
@@ -49,6 +64,11 @@ function get_clanwars($count = null, $completed = null, $clan = null, $wid = nul
 
     if($count > 0)
         $selected = array_slice($selected, 0, (int)$count);
+    
+    foreach($selected as &$clanwar) foreach($clanwar->clans as &$clan)
+    {
+        $clan->name = find_clan($clan->clan)->name;
+    }
 
     return $selected;
 }

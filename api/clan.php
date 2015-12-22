@@ -17,7 +17,7 @@ foreach($clans as $_clan)
         $clan = $_clan;
 }
 
-$clan->clanwars = get_clanwars(10, null, $clan_id);
+$clan->wars = get_clanwars(10, null, $clan_id);
 $clan->stats = get_clanstats(0, $clan_id)->now;
 
 echo json_encode($clan);

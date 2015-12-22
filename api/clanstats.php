@@ -1,6 +1,8 @@
-<?php require_once __DIR__ . '../vendor/autoload.php';
+<?php
+header("Content-Type: application/json");
+require_once __DIR__ . '/../vendor/autoload.php';
+require  __DIR__ . '/common.php';
 
-$clanstats_state->loadFromFile("data/clanstats.json");
+$stats = get_clanstats(15);
 
-print_r($clanstats_state->getState());
-
+echo json_encode($stats);

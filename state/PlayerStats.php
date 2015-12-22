@@ -61,7 +61,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 $state[$id]->frags += $player->frags;
                 $state[$id]->deaths += $player->deaths;
                 $team->elo += $state[$id]->elo;
-                $state[$id]->contrib = isset($player->score) ? ($win ? $player->score / $team->score : 1-$player->score / $team->score) : 0;
+                $state[$id]->contrib = isset($player->score) ? $player->score / $team->score : 0;
             }
         }
         if($count_elo)
@@ -72,7 +72,7 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
 
             $p = 1/(1+pow(10, -$delta/400)); // probability for the winning team to win
 
-            $k = 40 * $players_count;
+            $k = 40;
             $modifier = $tie ? 0.5 : 1;
 
             foreach($game->teams as $n => &$team)
@@ -81,7 +81,10 @@ class PlayerStatsAccumulator implements ActionFPS\OrderedActionIterator
                 foreach($team->players as $player) if(isset($player->user))
                 {
                     $id = $player->user;
-                    $state[$id]->elo += ($win ? 1 : -1) * $k * ($modifier - $p) * $state[$id]->contrib;
+                    $points = ($win ? 1 : -1) * $k * ($modifier - $p) * count($team->players);
+                    $state[$id]->elo += $points >= 0 ?
+                        $state[$id]->contrib * $points :
+                        (1-$state[$id]->contrib) * $points;
                 }
             }
         }

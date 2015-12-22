@@ -21,7 +21,8 @@ function get_clans()
 
 function find_clan($id)
 {
-    static $clans = get_clans();
+    static $clans = null;
+    if(!$clans) $clans = get_clans();
     foreach($clans as $clan) if($clan->id == $id)
     {
         return $clan;

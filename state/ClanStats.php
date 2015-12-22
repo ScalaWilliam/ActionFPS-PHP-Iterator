@@ -15,6 +15,8 @@ class ClanStats implements JsonSerializable
     public $frags = 0;
     public $deaths = 0;
     
+    const MIN_WARS_RANK = 5;
+    
     public function __construct($id)
     {
         $this->clan = $id;
@@ -45,8 +47,13 @@ class ClanStatsAccumulator implements ActionFPS\OrderedActionIterator
         $i = 1;
         foreach($clans as &$clan)
         {
-            $clan->rank = $i;
-            $i++;
+            if($clan->wars >= ClanStats::MIN_WARS_RANK)
+            {
+                $clan->rank = $i;
+                $i++;
+            }
+            else
+                $clan->rank = null;
         }
     }
     

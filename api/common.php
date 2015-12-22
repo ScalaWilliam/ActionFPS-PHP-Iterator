@@ -88,8 +88,13 @@ function get_clanstats($count = 15, $clan = null, $time = false)
     $i = 1;
     foreach($clanstats->now as &$_clan)
     {
-        $_clan->rank = $i;
-        $i++;
+        if($_clan->wars >= ClanStats::MIN_WARS_RANK)
+        {
+            $_clan->rank = $i;
+            $i++;
+        }
+        else
+            $_clan->rank = null;
     }
     
     $stats = new stdClass();

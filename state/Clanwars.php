@@ -55,6 +55,16 @@ class Clanwar implements JsonSerializable
 
     }
     
+    public static function sort_players($a, $b)
+    {
+        if($a->flags == $b->flags)
+        {
+            if($a->frags == $b->frags) return 0;
+            return $a->frags > $b->frags ? -1 : 1;
+        }
+        return $a->flags > $b->flags ? -1 : 1;
+    }
+    
     public function timeDiff($game)
     {
         $last_game_end = new DateTime($this->endTime);
@@ -114,6 +124,7 @@ class Clanwar implements JsonSerializable
                 $this->clans[$id]->players[$n]->frags += $player->frags;
                 $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }
+            usort($this->clans[$i]->players, 'Clanwar::sort_players');
         }
         $this->endTime = $game->endTime;
         $this->decideWinner();

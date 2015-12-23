@@ -124,7 +124,7 @@ class Clanwar implements JsonSerializable
                 $this->clans[$id]->players[$n]->frags += $player->frags;
                 $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }
-            usort($this->clans[$i]->players, 'Clanwar::sort_players');
+            uasort($this->clans[$i]->players, 'Clanwar::sort_players');
         }
         $this->endTime = $game->endTime;
         $this->decideWinner();

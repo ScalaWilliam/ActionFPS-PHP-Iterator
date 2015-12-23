@@ -27,11 +27,16 @@ class Processor
 		$seen = $initial_state->getSeen();
 		
         $games = $reference->getNewGames();
+        if(!is_array($games))
+        {
+            file_put_contents('messages', 'no game found', FILE_APPEND);
+        }
         foreach ($games as $game) {
             file_put_contents('messages', print_r($game, true), FILE_APPEND);
             if(!in_array($game->id, $seen))
             {
                 $seen[] = $game->id;
+                $game = json_decode(file_get_contents("http://api.actionfps.com/game/?id={$game->id}"));
                 $state->state = $iterator->reduce($reference, $state, $game);
             }
         }

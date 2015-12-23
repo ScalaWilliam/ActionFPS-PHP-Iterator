@@ -110,6 +110,7 @@ class Clanwar implements JsonSerializable
                     $this->clans[$id]->players[$n]->score += $player->score;
                     $this->clans[$id]->score += $player->score;
                 }
+                if(isset($player->flags)) $this->clans[$id]->players[$n]->flags += $player->flags;
                 $this->clans[$id]->players[$n]->frags += $player->frags;
                 $this->clans[$id]->players[$n]->deaths += $player->deaths;
             }

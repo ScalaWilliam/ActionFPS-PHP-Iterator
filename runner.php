@@ -1,8 +1,15 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-header("Content-Type: application/json");
-require_once "GameCounter.php";
-$game_counter = new GameCounter();
+
+require_once "state/PlayerStats.php";
+require_once "state/Clanwars.php";
+require_once "state/ClanStats.php";
+
+//$game_counter = new GameCounter();
+$playerstats = new PlayerStatsAccumulator();
+$clanwars = new ClanwarsAccumulator();
+$clanstats = new ClanStatsAccumulator();
+
 $reference = new ActionFPS\GamesCachedActionReference();
 /**
  * Support zip files
@@ -12,5 +19,14 @@ $reference = new ActionFPS\GamesCachedActionReference();
 //$reference = new ActionFPS\ZipActionReference("rf/rf.zip");
 
 $proc = new ActionFPS\Processor();
-echo json_encode($proc->processFromScratch($reference, $game_counter)->getState());
 
+$start_time = microtime(true);
+$proc->processGamesFromScratch($reference, $playerstats)->saveToFile("data/playerstats.json");
+$clanwars_state = $proc->processGamesFromScratch($reference, $clanwars);
+$clanwars_state->saveToFile("data/clanwars.json");
+
+$state = $clanwars_state->getState();
+$wars = $state->completed;
+$proc->processFromScratch($reference, $clanstats, $wars)->saveToFile("data/clanstats.json");
+
+echo "\n" . microtime(true) - $start_time;
